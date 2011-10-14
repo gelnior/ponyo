@@ -1,0 +1,10 @@
+<div id="home-view">
+  <p>Add a category</p>
+  <p>
+    <input id="category-field" type="text">
+    <input id="category-add-submit" type="submit" value="Add category">
+
+    <ul id="category-list">
+    </ul>
+  </p>
+</div>
