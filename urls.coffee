@@ -4,3 +4,4 @@ module.exports = (app) ->
   app.get "/", routers.index
   app.post "/categories/", routers.newCategory
   app.get "/categories/:category/", routers.category
+

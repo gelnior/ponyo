@@ -12,6 +12,7 @@ $(document).ready ->
   app.initialize = ->
     app.routers.main = new MainRouter()
     app.views.home = new HomeView()
+    app.views.home.render()
     app.views.home.setListeners()
     app.routers.main.navigate 'home', true if Backbone.history.getFragment() is ''
   app.initialize()

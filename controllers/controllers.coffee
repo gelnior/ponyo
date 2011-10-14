@@ -1,6 +1,7 @@
 # Models
 CategoryProvider = require("../models/models").CategoryProvider
 
+
 # Home page
 exports.index = (req, res) ->
   categoryProvider = new CategoryProvider
@@ -17,7 +18,7 @@ exports.newCategory = (req, res) ->
   categoryProvider = new CategoryProvider
 
   if name
-     categoryProvider.newCategory name, (err) ->
+    categoryProvider.newCategory name, (err) ->
       if err
         console.error(err.stack)
         return res.json  success: false
@@ -26,7 +27,9 @@ exports.newCategory = (req, res) ->
   else
     return res.json success: false
 
+
 # Category page
 exports.category = (req, res) ->
-  res.render "category", nbArticles: 0, category: req.params.category, articles: []
+  res.render \
+    "category", nbArticles: 0, category: req.params.category, articles: []
 

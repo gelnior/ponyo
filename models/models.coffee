@@ -1,5 +1,8 @@
 mongoose = require('mongoose')
 
+# Utils
+require("../public/client/src/app/utils/string")
+
 # DB
 mongoose.connect('mongodb://127.0.0.1/ponyo')
 Schema = mongoose.Schema
@@ -22,7 +25,7 @@ class CategoryProvider
     query.exec callback
 
   newCategory: (name, callback) ->
-    category = new Category name: name
+    category = new Category name: name, slug: name.slugify()
     category.save callback
 
 exports.CategoryProvider = CategoryProvider

@@ -11053,6 +11053,7 @@ window.jQuery = window.$ = jQuery;
     app.initialize = function() {
       app.routers.main = new MainRouter();
       app.views.home = new HomeView();
+      app.views.home.render();
       app.views.home.setListeners();
       if (Backbone.history.getFragment() === '') {
         return app.routers.main.navigate('home', true);
@@ -11061,6 +11062,38 @@ window.jQuery = window.$ = jQuery;
     app.initialize();
     return Backbone.history.start();
   });
+}).call(this);
+}, "models/category": function(exports, require, module) {(function() {
+  var Category, CategoryCollection;
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  };
+  Category = (function() {
+    __extends(Category, Backbone.Model);
+    Category.prototype.url = '/categories/';
+    function Category(category) {
+      Category.__super__.constructor.call(this);
+      this.id = category.slug;
+    }
+    return Category;
+  })();
+  CategoryCollection = (function() {
+    __extends(CategoryCollection, Backbone.Collection);
+    function CategoryCollection() {
+      CategoryCollection.__super__.constructor.apply(this, arguments);
+    }
+    CategoryCollection.prototype.model = Category;
+    CategoryCollection.prototype.url = '/categories/';
+    CategoryCollection.prototype.parse = function(response) {
+      return response.rows;
+    };
+    return CategoryCollection;
+  })();
 }).call(this);
 }, "routers/main_router": function(exports, require, module) {(function() {
   var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
@@ -11083,7 +11116,7 @@ window.jQuery = window.$ = jQuery;
     return MainRouter;
   })();
 }).call(this);
-}, "templates/home": function(exports, require, module) {module.exports = function(__obj) {
+}, "templates/categories": function(exports, require, module) {module.exports = function(__obj) {
   if (!__obj) __obj = {};
   var __out = [], __capture = function(callback) {
     var out = __out, result;
@@ -11122,14 +11155,147 @@ window.jQuery = window.$ = jQuery;
   }
   (function() {
     (function() {
-      __out.push('<!-- START you can remove this -->\n<div id="content">\n  <span id="props">with coffee</span>\n  <h1>brunch</h1>\n  <h2>Welcome!</h2>\n  <ul>\n    <li><a href="http://brunchwithcoffee.com/#documentation">Documentation</a></li>\n    <li><a href="https://github.com/brunch/brunch/issues">Github Issues</a></li>\n    <li><a href="https://github.com/brunch/example-todos">Todos Example App</a></li>\n  </ul>\n</div>\n<!-- END you can remove this -->\n');
+      __out.push('<div id="home-view">\n  <p>Add a category</p>\n  <p>\n    <input id="category-field" type="text">\n    <input id="category-add-submit" type="submit" value="Add category">\n\n    <ul id="category-list">\n    </ul>\n  </p>\n</div>\n');
     }).call(this);
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
   return __out.join('');
-}}, "views/home_view": function(exports, require, module) {(function() {
-  var homeTemplate;
+}}, "templates/category": function(exports, require, module) {module.exports = function(__obj) {
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
+  };
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    };
+  }
+  (function() {
+    (function() {
+      category.name;
+      __out.push('\n');
+    }).call(this);
+    
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}}, "templates/home": function(exports, require, module) {module.exports = function(__obj) {
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
+  };
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    };
+  }
+  (function() {
+    (function() {
+      __out.push('<!-- START you can remove this -->\n<div id="content">\n  <span id="props">with coffee</span>\n  <h1>brunch</h1>\n  <h2>Welcome!</h2>\n  <ul>\n    <li><a href="http://brunchwithcoffee.com/#documentation">Documentation</a></li>\n    <li><a href="https://github.com/brunch/brunch/issues">Github Issues</a></li>\n    <li><a href="https://github.com/brunch/example-todos">Todos Example App</a></li>\n  </ul>\n</div>\n<!-- END you can remove this -->\n\n');
+    }).call(this);
+    
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+}}, "utils/string": function(exports, require, module) {(function() {
+  String.prototype.slugify = function() {
+    var s, _slugify_hyphenate_re, _slugify_strip_re;
+    _slugify_strip_re = /[^\w\s-]/g;
+    _slugify_hyphenate_re = /[-\s]+/g;
+    s = this.replace(_slugify_strip_re, '').trim().toLowerCase();
+    s = s.replace(_slugify_hyphenate_re, '-');
+    return s;
+  };
+}).call(this);
+}, "views/category": function(exports, require, module) {(function() {
+  var CategoryRow, categoryTemplate;
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
+    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  };
+  categoryTemplate = require('templates/category');
+  CategoryRow = (function() {
+    __extends(CategoryRow, Backbone.View);
+    CategoryRow.prototype.tagName = "li";
+    CategoryRow.prototype.className = "category-row";
+    function CategoryRow(model) {
+      this.model = model;
+      CategoryRow.__super__.constructor.call(this);
+      this.id = this.model.id;
+      this.model.view = this;
+    }
+    CategoryRow.prototype.remove = function() {
+      return $(this.el).remove();
+    };
+    CategoryRow.prototype.render = function() {
+      return $(this.el).html(categoryTemplate({
+        category: this.model
+      }));
+    };
+    return CategoryRow;
+  })();
+}).call(this);
+}, "views/home_view": function(exports, require, module) {(function() {
+  var CategoryCollection, CategoryRow, categoryTemplate;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
     for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
     function ctor() { this.constructor = child; }
@@ -11138,36 +11304,61 @@ window.jQuery = window.$ = jQuery;
     child.__super__ = parent.prototype;
     return child;
   };
-  homeTemplate = require('templates/home');
+  require("utils/string");
+  categoryTemplate = require('templates/categories');
+  CategoryCollection = require('models/category').CategoryCollection;
+  CategoryRow = require('views/category').CategoryRow;
   exports.HomeView = (function() {
     __extends(HomeView, Backbone.View);
     HomeView.prototype.id = 'home-view';
     /* Events */
     HomeView.prototype.events = {
-      "click #category-add-submit": "onAddCategoryClicked"
+      "click #category-add-submit": "onAddCategoryClicked",
+      "click .category-name": "onCategoryNameClicked"
     };
     function HomeView() {
       this.onAddCategoryClicked = __bind(this.onAddCategoryClicked, this);      HomeView.__super__.constructor.call(this);
+      this.categories = new CategoryCollection();
     }
     /* Listeners */
     HomeView.prototype.onAddCategoryClicked = function(event) {
+      var categoryName;
+      categoryName = $("#category-field").val();
       return $.ajax({
         type: 'POST',
         url: "categories/",
         data: {
-          name: $("#category-field").val()
+          name: categoryName
         },
         success: function() {
-          return $("#category-list").append("<li>" + ($("#category-field").val()) + "</li>");
+          $("#category-list").append("<li>" + categoryName + "</li>");
+          return $(".category-name").click(this.onCategoryNameClicked);
         },
         dataType: "json"
       });
     };
+    HomeView.prototype.onCategoryNameClicked = function(event) {
+      var name;
+      name = $(event.target).html();
+      return $.get("/categories/" + (name.slugify()) + "/", function(data) {
+        return $("#nav-content").html(data);
+      });
+    };
+    HomeView.prototype.onCategoriesAdded = function() {
+      return categories.forEach(function(category) {
+        var categoryRow;
+        categoryRow = new CategoryRow;
+        return $("category-list").append(categoryRow.render());
+      });
+    };
     HomeView.prototype.setListeners = function() {
-      return $("#category-add-submit").click(this.onAddCategoryClicked);
+      $("#category-add-submit").click(this.onAddCategoryClicked);
+      $(".category-name").click(this.onCategoryNameClicked);
+      return this.categories.bind("addAll", onCategoriesAdded);
     };
     HomeView.prototype.render = function() {
-      return this;
+      $("#nav-content").html(categoryTemplate());
+      return this.categories.fetch();
     };
     return HomeView;
   })();

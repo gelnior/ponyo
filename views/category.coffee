@@ -5,7 +5,7 @@ p ->
     "no articles for #{@category}"
 
 h2 ->
-  articles
+  "Articles"
 
 ul ->
   for article in @articles
