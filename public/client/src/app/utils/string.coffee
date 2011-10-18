@@ -1,3 +1,4 @@
+# Transform a string to make it usable inside an URL. 
 String.prototype.slugify = () ->
   _slugify_strip_re = /[^\w\s-]/g
   _slugify_hyphenate_re = /[-\s]+/g

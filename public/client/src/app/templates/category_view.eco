@@ -1,0 +1,6 @@
+<p id="back-categories">
+  <a href="#home">Back to categories</a>
+</p>
+<p>
+  <%= @category.name %>
+</p>

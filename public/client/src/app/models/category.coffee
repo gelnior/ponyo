@@ -1,20 +1,11 @@
-class Category extends Backbone.Model
+class exports.Category extends Backbone.Model
 
   url: '/categories/'
 
   constructor: (category) ->
     super()
-
+    
+    @name = category.name
+    @slug = category.slug
     @id = category.slug
-
-
-class CategoryCollection extends Backbone.Collection
-
-  model: Category
-  url: '/categories/'
-
-  # Select which field from backend response to use for parsing to populate
-  # collection.
-  parse: (response) ->
-    response.rows
 

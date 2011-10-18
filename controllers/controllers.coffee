@@ -5,12 +5,17 @@ CategoryProvider = require("../models/models").CategoryProvider
 # Home page
 exports.index = (req, res) ->
   categoryProvider = new CategoryProvider
-  categoryProvider.getAll (err, docs) ->
+  res.render "index", title: "Ponyo"
+
+
+# Category list
+exports.getCategories = (req, res)  ->
+  categoryProvider = new CategoryProvider
+  categoryProvider.getAll (err, docs) =>
     if err
        console.error(err.stack)
        docs = []
-    res.render "index", title: "Ponyo", categories: docs
-
+    res.json rows: docs
 
 # Category creation
 exports.newCategory = (req, res) ->
@@ -30,6 +35,14 @@ exports.newCategory = (req, res) ->
 
 # Category page
 exports.category = (req, res) ->
-  res.render \
-    "category", nbArticles: 0, category: req.params.category, articles: []
+  categoryProvider = new CategoryProvider
+  categoryProvider.getCategory req.params.category, (err, docs) ->
+    if err
+      console.error(err.stack)
+      res.json 'I dont have that', 404
+    else if docs
+       res.json docs[0]
+    else
+       res.json 'I dont have that', 404
+
 
