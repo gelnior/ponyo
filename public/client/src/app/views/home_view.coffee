@@ -2,7 +2,6 @@ require("utils/string")
 
 categoryTemplate = require('templates/categories')
 CategoryRow = require('views/category').CategoryRow
-
 CategoryCollection = require('collections/category').CategoryCollection
 
 
@@ -41,7 +40,7 @@ class exports.HomeView extends Backbone.View
       type: 'POST'
       url: "categories/"
       data: { name: categoryName }
-      success: ->
+      success: =>
         @categoryList.append("<li>#{categoryName}</li>")
 
       dataType: "json"

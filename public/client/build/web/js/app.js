@@ -11439,9 +11439,9 @@ window.jQuery = window.$ = jQuery;
         data: {
           name: categoryName
         },
-        success: function() {
+        success: __bind(function() {
           return this.categoryList.append("<li>" + categoryName + "</li>");
-        },
+        }, this),
         dataType: "json"
       });
     };

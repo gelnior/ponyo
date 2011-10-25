@@ -4,7 +4,6 @@ CategoryProvider = require("../models/models").CategoryProvider
 
 # Home page
 exports.index = (req, res) ->
-  categoryProvider = new CategoryProvider
   res.render "index", title: "Ponyo"
 
 

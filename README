@@ -3,3 +3,12 @@ very simple CMS to get familiar with node.js technologies
 to run: 
     
      coffee ponyo.coffee
+
+dependencies:
+
+     npm install coffeescript
+     npm install express
+     npm install brunch
+     npm install mongoose
+     npm install eco
+     npm install coffeekup

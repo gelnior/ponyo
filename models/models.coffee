@@ -25,18 +25,21 @@ class CategoryProvider
   getAll: (callback) ->
     query = Category.find {}
     query.exec callback
+    return
 
   # Get a category from its slug.
   getCategory: (slug, callback) ->
     query = Category.find { "slug": slug }
     query.limit 1
     query.exec callback
+    return
 
   # Create a new category.
   newCategory: (name, callback) ->
     category = new Category name: name, slug: name.slugify()
     category.save callback
-
+    return
+ 
 exports.CategoryProvider = CategoryProvider
 
 
