@@ -27,6 +27,11 @@ class CategoryProvider
     query.exec callback
     return
 
+  # Delete all categories
+  deleteAll: (callback) ->
+    query = Category.remove {}, callback
+    return
+
   # Get a category from its slug.
   getCategory: (slug, callback) ->
     query = Category.find { "slug": slug }
@@ -34,10 +39,15 @@ class CategoryProvider
     query.exec callback
     return
 
-  # Create a new category.
+  # Create a new category if it does not exist.
   newCategory: (name, callback) ->
-    category = new Category name: name, slug: name.slugify()
-    category.save callback
+    slug = name.slugify()
+    @getCategory slug, (err, docs) ->
+      if docs.length > 0
+        callback(new Error("Cateory already exists"), [])
+      else
+        category = new Category name: name, slug: name.slugify()
+        category.save callback
     return
  
 exports.CategoryProvider = CategoryProvider

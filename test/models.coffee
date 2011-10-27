@@ -1,7 +1,6 @@
 vows = require('vows')
 eyes = require('eyes')
 assert = require('assert')
-
 CategoryProvider = require("../models/models").CategoryProvider
 
 
@@ -12,13 +11,27 @@ vows.describe('Categories')
       topic: () ->
         new CategoryProvider
 
+      'delete all categories':
+        topic: (categoryProvider) ->
+           categoryProvider.deleteAll @callback
+  
+        'without any error': (err) ->
+           assert.isUndefined err.stack
+  )
+
+  .addBatch(
+    'A category provider':
+      topic: () ->
+        new CategoryProvider
+
       'creates a new category':
         topic: (categoryProvider) ->
-          categoryProvider.newCategory "category-01", @callback
+          categoryProvider.newCategory "Category 01", @callback
 
         'that has now an id': (doc) ->
           assert.isNotNull doc._id
   )
+
   .addBatch(
     'A category provider':
       topic: () ->
