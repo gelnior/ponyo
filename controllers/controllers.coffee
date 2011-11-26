@@ -39,9 +39,9 @@ exports.category = (req, res) ->
     if err
       console.error(err.stack)
       res.json 'I dont have that', 404
-    else if docs
-       res.json docs[0]
+    else if docs.length > 0
+      res.json docs[0]
     else
-       res.json 'I dont have that', 404
+      res.json 'I dont have that', 404
 
 

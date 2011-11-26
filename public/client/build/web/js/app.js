@@ -11042,39 +11042,54 @@ window.jQuery = window.$ = jQuery;
   return this.require.define;
 }).call(this)({"collections/category": function(exports, require, module) {(function() {
   var Category;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-    function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor;
-    child.__super__ = parent.prototype;
-    return child;
-  };
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
   Category = require("models/category").Category;
+
   exports.CategoryCollection = (function() {
+
     __extends(CategoryCollection, Backbone.Collection);
+
     CategoryCollection.prototype.model = Category;
+
     CategoryCollection.prototype.url = '/categories/';
+
     function CategoryCollection() {
       CategoryCollection.__super__.constructor.call(this);
     }
+
     CategoryCollection.prototype.parse = function(response) {
       return response.rows;
     };
+
     return CategoryCollection;
+
   })();
+
 }).call(this);
 }, "main": function(exports, require, module) {(function() {
-  /* Application entry point */
+
+  /* Application entry point
+  */
+
   var CategoryView, HomeView, MainRouter;
+
   window.app = {};
+
   app.routers = {};
+
   app.models = {};
+
   app.collections = {};
+
   app.views = {};
+
   MainRouter = require('routers/main_router').MainRouter;
+
   HomeView = require('views/home_view').HomeView;
+
   CategoryView = require('views/category_view').CategoryView;
+
   $(document).ready(function() {
     app.initialize = function() {
       app.routers.main = new MainRouter();
@@ -11087,54 +11102,57 @@ window.jQuery = window.$ = jQuery;
     app.initialize();
     return Backbone.history.start();
   });
+
 }).call(this);
 }, "models/category": function(exports, require, module) {(function() {
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-    function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor;
-    child.__super__ = parent.prototype;
-    return child;
-  };
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
   exports.Category = (function() {
+
     __extends(Category, Backbone.Model);
+
     Category.prototype.url = '/categories/';
+
     function Category(category) {
       Category.__super__.constructor.call(this);
       this.name = category.name;
       this.slug = category.slug;
       this.id = category.slug;
     }
+
     return Category;
+
   })();
+
 }).call(this);
 }, "routers/main_router": function(exports, require, module) {(function() {
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-    function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor;
-    child.__super__ = parent.prototype;
-    return child;
-  };
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
   exports.MainRouter = (function() {
+
     __extends(MainRouter, Backbone.Router);
+
     function MainRouter() {
       MainRouter.__super__.constructor.apply(this, arguments);
     }
+
     MainRouter.prototype.routes = {
       "home": "home",
       "categories/:category": "category"
     };
+
     MainRouter.prototype.home = function() {
       return app.views.home.render();
     };
+
     MainRouter.prototype.category = function(category) {
       return app.views.category.render(category);
     };
+
     return MainRouter;
+
   })();
+
 }).call(this);
 }, "templates/categories": function(exports, require, module) {module.exports = function(__obj) {
   if (!__obj) __obj = {};
@@ -11174,9 +11192,8 @@ window.jQuery = window.$ = jQuery;
     };
   }
   (function() {
-    (function() {
+    
       __out.push('<div id="home-view">\n  <p>Add a category</p>\n  <p>\n    <input id="category-field" type="text">\n    <input id="category-add-submit" type="submit" value="Add category">\n\n    <ul id="category-list">\n    </ul>\n  </p>\n</div>\n');
-    }).call(this);
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
@@ -11219,10 +11236,10 @@ window.jQuery = window.$ = jQuery;
     };
   }
   (function() {
-    (function() {
+    
       __out.push(__sanitize(this.category.name));
+    
       __out.push('\n');
-    }).call(this);
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
@@ -11265,11 +11282,12 @@ window.jQuery = window.$ = jQuery;
     };
   }
   (function() {
-    (function() {
+    
       __out.push('<p id="back-categories">\n  <a href="#home">Back to categories</a>\n</p>\n<p>\n  ');
+    
       __out.push(__sanitize(this.category.name));
+    
       __out.push('\n</p>\n');
-    }).call(this);
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
@@ -11312,14 +11330,13 @@ window.jQuery = window.$ = jQuery;
     };
   }
   (function() {
-    (function() {
+    
       __out.push('<!-- START you can remove this -->\n<div id="content">\n  <span id="props">with coffee</span>\n  <h1>brunch</h1>\n  <h2>Welcome!</h2>\n  <ul>\n    <li><a href="http://brunchwithcoffee.com/#documentation">Documentation</a></li>\n    <li><a href="https://github.com/brunch/brunch/issues">Github Issues</a></li>\n    <li><a href="https://github.com/brunch/example-todos">Todos Example App</a></li>\n  </ul>\n</div>\n<!-- END you can remove this -->\n\n');
-    }).call(this);
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
   return __out.join('');
-}}, "utils/string": function(exports, require, module) {(function() {
+}}, "utils/string": function(exports, require, module) {
   String.prototype.slugify = function() {
     var s, _slugify_hyphenate_re, _slugify_strip_re;
     _slugify_strip_re = /[^\w\s-]/g;
@@ -11328,64 +11345,70 @@ window.jQuery = window.$ = jQuery;
     s = s.replace(_slugify_hyphenate_re, '-');
     return s;
   };
-}).call(this);
 }, "views/category": function(exports, require, module) {(function() {
   var categoryTemplate;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-    function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor;
-    child.__super__ = parent.prototype;
-    return child;
-  };
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
   categoryTemplate = require('templates/category');
+
   exports.CategoryRow = (function() {
+
     __extends(CategoryRow, Backbone.View);
+
     CategoryRow.prototype.tagName = "li";
+
     CategoryRow.prototype.className = "category-row";
+
     function CategoryRow(model) {
       this.model = model;
       CategoryRow.__super__.constructor.call(this);
       this.id = this.model.id;
       this.model.view = this;
     }
+
     CategoryRow.prototype.events = {
       "click": "onClicked"
     };
+
     CategoryRow.prototype.onClicked = function(event) {
       return app.routers.main.navigate("categories/" + this.model.slug, true);
     };
+
     CategoryRow.prototype.remove = function() {
       return $(this.el).remove();
     };
+
     CategoryRow.prototype.render = function() {
       $(this.el).html(categoryTemplate({
         category: this.model
       }));
       return this.el;
     };
+
     return CategoryRow;
+
   })();
+
 }).call(this);
 }, "views/category_view": function(exports, require, module) {(function() {
   var categoryViewTemplate;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-    function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor;
-    child.__super__ = parent.prototype;
-    return child;
-  };
+  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
   categoryViewTemplate = require('../templates/category_view');
+
   exports.CategoryView = (function() {
+
     __extends(CategoryView, Backbone.View);
+
     CategoryView.prototype.id = 'category-view';
-    /* Events */
+
+    /* Events
+    */
+
     function CategoryView() {
       CategoryView.__super__.constructor.call(this);
     }
+
     CategoryView.prototype.render = function(category) {
       $("#nav-content").html(null);
       return $.get("/categories/" + category + "/", function(data) {
@@ -11394,67 +11417,88 @@ window.jQuery = window.$ = jQuery;
         }));
       });
     };
+
     return CategoryView;
+
   })();
+
 }).call(this);
 }, "views/home_view": function(exports, require, module) {(function() {
   var CategoryCollection, CategoryRow, categoryTemplate;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-    function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor;
-    child.__super__ = parent.prototype;
-    return child;
-  };
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
   require("utils/string");
+
   categoryTemplate = require('templates/categories');
+
   CategoryRow = require('views/category').CategoryRow;
+
   CategoryCollection = require('collections/category').CategoryCollection;
+
   exports.HomeView = (function() {
+
     __extends(HomeView, Backbone.View);
+
     HomeView.prototype.id = 'home-view';
-    /* Events */
+
+    /* Events
+    */
+
     HomeView.prototype.events = {
       "click #category-add-submit": "onAddCategoryClicked"
     };
-    /* Constructor */
+
+    /* Constructor
+    */
+
     function HomeView() {
       this.fillCategories = __bind(this.fillCategories, this);
       this.onAddCategoryClicked = __bind(this.onAddCategoryClicked, this);
       this.setListeners = __bind(this.setListeners, this);      HomeView.__super__.constructor.call(this);
       this.categories = new CategoryCollection();
     }
-    /* Listeners */
+
+    /* Listeners
+    */
+
     HomeView.prototype.setListeners = function() {
       this.categories.bind('reset', this.fillCategories);
       return this.addButton.click(this.onAddCategoryClicked);
     };
+
     HomeView.prototype.onAddCategoryClicked = function(event) {
       var categoryName;
+      var _this = this;
       categoryName = this.categoryField.val();
       return $.ajax({
         type: 'POST',
-        url: "categories/",
+        url: "/categories/",
         data: {
           name: categoryName
         },
-        success: __bind(function() {
-          return this.categoryList.append("<li>" + categoryName + "</li>");
-        }, this),
+        success: function() {
+          return _this.categoryList.append("<li>" + categoryName + "</li>");
+        },
         dataType: "json"
       });
     };
-    /* Functions */
+
+    /* Functions
+    */
+
     HomeView.prototype.fillCategories = function() {
+      var _this = this;
       this.categoryList.html(null);
-      return this.categories.forEach(__bind(function(category) {
+      return this.categories.forEach(function(category) {
         var categoryRow;
         categoryRow = new CategoryRow(category);
-        return this.categoryList.append(categoryRow.render());
-      }, this));
+        return _this.categoryList.append(categoryRow.render());
+      });
     };
-    /* Render */
+
+    /* Render
+    */
+
     HomeView.prototype.render = function() {
       this.content = $("#nav-content");
       this.content.html(categoryTemplate());
@@ -11465,7 +11509,10 @@ window.jQuery = window.$ = jQuery;
       this.categoryList.html(null);
       return this.categories.fetch();
     };
+
     return HomeView;
+
   })();
+
 }).call(this);
 }});

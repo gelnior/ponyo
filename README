@@ -12,3 +12,6 @@ dependencies:
      npm install mongoose
      npm install eco
      npm install coffeekup
+     npm install vows
+     npm install eyes
+     npm install request

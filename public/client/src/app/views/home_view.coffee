@@ -36,15 +36,15 @@ class exports.HomeView extends Backbone.View
   onAddCategoryClicked: (event) =>
     categoryName = @categoryField .val()
 
-    $.ajax
-      type: 'POST'
-      url: "categories/"
-      data: { name: categoryName }
+    $.ajax(
+      type: 'POST',
+      url: "/categories/",
+      data: { name: categoryName },
       success: =>
         @categoryList.append("<li>#{categoryName}</li>")
-
-      dataType: "json"
-
+      ,
+      dataType: "json",
+    )
 
   ### Functions ###
 

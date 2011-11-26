@@ -50,6 +50,23 @@ vows.describe('Categories')
           assert.equal "Category 01", category.name
           assert.equal "category-01", category.slug
   )
+
+
+  .addBatch(
+    'A category provider':
+      topic: () ->
+        new CategoryProvider
+
+      'gets all category':
+        topic: (categoryProvider) ->
+          categoryProvider.getAll @callback
+
+        'and find one category': (docs) ->
+          assert.equal 1, docs.length
+  )
+
+
+
   .export(module)
 
 

@@ -7,7 +7,8 @@ app.configure ->
   app.set "views", __dirname + "/views"
   app.register '.coffee', require('coffeekup')
   app.set 'view engine', 'coffee'
-
+  
+  app.use express.logger('tiny')
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use require("stylus").middleware(src: __dirname + "/public")
