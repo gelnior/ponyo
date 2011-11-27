@@ -8,7 +8,7 @@ class exports.CategoryRow extends Backbone.View
   constructor: (@model) ->
     super()
     
-    @id = @model.id
+    @id = @model.slug
     @model.view = @
 
   events:

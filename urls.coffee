@@ -3,6 +3,7 @@ module.exports = (app) ->
 
   # Home  
   app.get "/", routers.index
+  app.get "/tests/", routers.indexTest
 
   # Categories
   app.get "/categories/", routers.getCategories

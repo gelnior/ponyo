@@ -11283,7 +11283,7 @@ window.jQuery = window.$ = jQuery;
   }
   (function() {
     
-      __out.push('<p id="back-categories">\n  <a href="#home">Back to categories</a>\n</p>\n<p>\n  ');
+      __out.push('<p>\n  <a id="back-categories" href="#home">Back to categories</a>\n</p>\n<p>\n  ');
     
       __out.push(__sanitize(this.category.name));
     
@@ -11362,7 +11362,7 @@ window.jQuery = window.$ = jQuery;
     function CategoryRow(model) {
       this.model = model;
       CategoryRow.__super__.constructor.call(this);
-      this.id = this.model.id;
+      this.id = this.model.slug;
       this.model.view = this;
     }
 
@@ -11477,7 +11477,7 @@ window.jQuery = window.$ = jQuery;
           name: categoryName
         },
         success: function() {
-          return _this.categoryList.append("<li>" + categoryName + "</li>");
+          return _this.categoryList.append("<li id=\"" + (categoryName.slugify()) + "\">" + categoryName + "</li>");
         },
         dataType: "json"
       });
@@ -11490,9 +11490,11 @@ window.jQuery = window.$ = jQuery;
       var _this = this;
       this.categoryList.html(null);
       return this.categories.forEach(function(category) {
-        var categoryRow;
+        var categoryRow, el;
         categoryRow = new CategoryRow(category);
-        return _this.categoryList.append(categoryRow.render());
+        el = categoryRow.render();
+        _this.categoryList.append(el);
+        return el.id = category.slug;
       });
     };
 

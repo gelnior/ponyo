@@ -4,8 +4,10 @@ CategoryProvider = require("../models/models").CategoryProvider
 
 # Home page
 exports.index = (req, res) ->
-  res.render "index", title: "Ponyo"
+  res.render "index", title: "Ponyo", test: false
 
+exports.indexTest = (req, res) ->
+  res.render "index", title: "Ponyo", test: true
 
 # Category list
 exports.getCategories = (req, res)  ->

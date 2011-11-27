@@ -41,7 +41,8 @@ class exports.HomeView extends Backbone.View
       url: "/categories/",
       data: { name: categoryName },
       success: =>
-        @categoryList.append("<li>#{categoryName}</li>")
+        @categoryList.append(
+          "<li id=\"#{categoryName.slugify()}\">#{categoryName}</li>")
       ,
       dataType: "json",
     )
@@ -53,7 +54,9 @@ class exports.HomeView extends Backbone.View
     @categoryList.html null
     @categories.forEach (category) =>
       categoryRow = new CategoryRow category
-      @categoryList.append categoryRow.render()
+      el = categoryRow.render()
+      @categoryList.append el
+      el.id = category.slug
  
 
   ### Render ###
