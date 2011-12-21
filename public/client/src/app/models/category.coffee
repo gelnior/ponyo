@@ -9,3 +9,7 @@ class exports.Category extends Backbone.Model
     @slug = category.slug
     @id = category.slug
 
+    @url += @id + "/"
+
+  isNew: () ->
+    @id is undefined

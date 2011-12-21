@@ -11118,7 +11118,12 @@ window.jQuery = window.$ = jQuery;
       this.name = category.name;
       this.slug = category.slug;
       this.id = category.slug;
+      this.url += this.id + "/";
     }
+
+    Category.prototype.isNew = function() {
+      return this.id === void 0;
+    };
 
     return Category;
 
@@ -11287,7 +11292,7 @@ window.jQuery = window.$ = jQuery;
     
       __out.push(__sanitize(this.category.name));
     
-      __out.push('\n</p>\n');
+      __out.push('\n</p>\n<p>\n  <a id="delete-category-button" href="#home">\n    Delete category\n  </a>\n</p>\n');
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
@@ -11391,10 +11396,12 @@ window.jQuery = window.$ = jQuery;
 
 }).call(this);
 }, "views/category_view": function(exports, require, module) {(function() {
-  var categoryViewTemplate;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+  var Category, categoryViewTemplate;
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   categoryViewTemplate = require('../templates/category_view');
+
+  Category = require('../models/category').Category;
 
   exports.CategoryView = (function() {
 
@@ -11402,19 +11409,40 @@ window.jQuery = window.$ = jQuery;
 
     CategoryView.prototype.id = 'category-view';
 
+    CategoryView.prototype.events = {
+      "click #delete-category-button": "onDeleteButtonClicked"
+    };
+
     /* Events
     */
 
     function CategoryView() {
-      CategoryView.__super__.constructor.call(this);
+      this.onDeleteButtonClicked = __bind(this.onDeleteButtonClicked, this);      CategoryView.__super__.constructor.call(this);
     }
 
     CategoryView.prototype.render = function(category) {
+      var _this = this;
       $("#nav-content").html(null);
       return $.get("/categories/" + category + "/", function(data) {
-        return $("#nav-content").html(categoryViewTemplate({
+        $("#nav-content").html(categoryViewTemplate({
           category: data
         }));
+        _this.model = new Category(data);
+        _this.deleteButton = $("#delete-category-button");
+        return _this.deleteButton.click(_this.onDeleteButtonClicked);
+      });
+    };
+
+    CategoryView.prototype.onDeleteButtonClicked = function(event) {
+      event.preventDefault();
+      return this.model.destroy({
+        success: function() {
+          return app.routers.main.navigate("home", true);
+        },
+        error: function() {
+          alert("An error occured, category was probably not deleted.");
+          return app.routers.main.navigate("home", true);
+        }
       });
     };
 

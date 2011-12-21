@@ -4,3 +4,8 @@
 <p>
   <%= @category.name %>
 </p>
+<p>
+  <a id="delete-category-button" href="#home">
+    Delete category
+  </a>
+</p>
