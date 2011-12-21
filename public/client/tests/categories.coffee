@@ -32,4 +32,19 @@ describe 'Category browsing', ->
       expect($("#category-list").length).not.toEqual(0)
 
 
+describe 'Category deletion', ->
+
+  it 'When I display newly created category', ->
+      expect(false).toBeTruthy()
+
+  it 'And I click on delete category button from a category page', ->
+      expect(false).toBeTruthy()
+
+  it 'Then it brings me back to category list', ->
+      expect(false).toBeTruthy()
+
+  it 'And deleted activity is no more in the list', ->
+      expect(false).toBeTruthy()
+
+
 

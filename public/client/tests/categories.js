@@ -33,3 +33,18 @@
       });
     });
   });
+
+  describe('Category deletion', function() {
+    it('When I display newly created category', function() {
+      return expect(false).toBeTruthy();
+    });
+    it('And I click on delete category button from a category page', function() {
+      return expect(false).toBeTruthy();
+    });
+    it('Then it brings me back to category list', function() {
+      return expect(false).toBeTruthy();
+    });
+    return it('And deleted activity is no more in the list', function() {
+      return expect(false).toBeTruthy();
+    });
+  });
