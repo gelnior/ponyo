@@ -35,16 +35,22 @@ describe 'Category browsing', ->
 describe 'Category deletion', ->
 
   it 'When I display newly created category', ->
-      expect(false).toBeTruthy()
+    runs ->
+      $("#category-jasmine").click()
+    waits(500) # Waits to be sure that everything is done before testing
 
   it 'And I click on delete category button from a category page', ->
-      expect(false).toBeTruthy()
+    runs ->
+      $("#delete-category-button").click()
+    waits(500) # Waits to be sure that everything is done before testing
 
   it 'Then it brings me back to category list', ->
-      expect(false).toBeTruthy()
+    runs ->
+      expect($("#category-list").length).not.toEqual 0
 
   it 'And deleted activity is no more in the list', ->
-      expect(false).toBeTruthy()
+    runs ->
+      expect($("#category-jamsine").length).toEqual 0
 
 
 
