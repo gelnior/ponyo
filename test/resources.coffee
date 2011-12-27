@@ -130,5 +130,18 @@ vows.describe('Resources')
          assert.equal "Category 02", body.name
   
 
+  .addBatch
+    'DELETE /categories/category-02/':
+      topic: () ->
+        apiTest.del 'categories/category-02/', @callback
+
+      'response should be with a 200 OK': (error, response, body) ->
+          assert.ok false
+      'GET /categories/category-02/':
+         topic: () ->
+           apiTest.get 'categories/category-02/', @callback
+         'response should be with a 404 Not Found': (error, response, body) ->
+            assert.ok false
+
   .export(module)
 
