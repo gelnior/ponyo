@@ -9,4 +9,5 @@ module.exports = (app) ->
   app.get "/categories/", routers.getCategories
   app.post "/categories/", routers.newCategory
   app.get "/categories/:category/", routers.category
+  app.del "/categories/:category/", routers.deleteCategory
 

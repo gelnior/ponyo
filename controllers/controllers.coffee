@@ -33,6 +33,23 @@ exports.newCategory = (req, res) ->
   else
     return res.json success: false
 
+# Category Deletion
+exports.deleteCategory = (req, res) ->
+  categoryProvider = new CategoryProvider
+
+  categoryProvider.getCategory req.params.category, (err, docs) ->
+    if err
+      console.error(err.stack)
+      res.json 'An error occured', 500
+    else if docs.length > 0
+      docs[0].remove (err) ->
+        if err
+          console.error(err.stack)
+          res.json 'An error occured', 500
+        else
+          return res.json  success: true
+    else
+      res.json 'I dont have that', 404
 
 # Category page
 exports.category = (req, res) ->
