@@ -37,14 +37,13 @@ class CategoryProvider
     query = Category.find { "slug": slug }
     query.limit 1
     query.exec callback
-    return
 
   # Create a new category if it does not exist.
   newCategory: (name, callback) ->
     slug = name.slugify()
     @getCategory slug, (err, docs) ->
       if docs.length > 0
-        callback(new Error("Cateory already exists"), [])
+        callback(new Error("Category already exists"), [])
       else
         category = new Category name: name, slug: name.slugify()
         category.save callback
