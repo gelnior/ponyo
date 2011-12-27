@@ -135,13 +135,11 @@ vows.describe('Resources')
       topic: () ->
         apiTest.del 'categories/category-02/', @callback
 
-      'response should be with a 200 OK': (error, response, body) ->
-          assertStatus 200
+      'response should be with a 200 OK': assertStatus 200
       'GET /categories/category-02/':
          topic: () ->
            apiTest.get 'categories/category-02/', @callback
-         'response should be with a 404 Not Found': (error, response, body) ->
-            assertStatus 404
+         'response should be with a 404 Not Found': assertStatus 404
 
   .export(module)
 
