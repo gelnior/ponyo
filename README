@@ -6,7 +6,7 @@ to run:
 
 dependencies:
 
-     npm install coffeescript
+     npm install coffee-script
      npm install express
      npm install brunch
      npm install mongoose
