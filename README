@@ -15,3 +15,8 @@ dependencies:
      npm install vows
      npm install eyes
      npm install request
+     npm install stylus
+
+You also need MongoDB database: 
+
+     apt-get install mongodb
