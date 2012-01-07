@@ -13,6 +13,7 @@ script ->
 
 if @test
   script src: '/client/tests/categories.js'
+  script src: '/client/tests/articles.js'
   script '''
         jasmine.getEnv().addReporter(new jasmine.TrivialReporter())
         jasmine.getEnv().execute()
