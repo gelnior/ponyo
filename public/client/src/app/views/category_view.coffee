@@ -1,6 +1,11 @@
 categoryViewTemplate = require('../templates/category_view')
 Category = require('../models/category').Category
 
+
+articleTemplate = require('templates/article')
+CategoryRow = require('views/category').CategoryRow
+CategoryCollection = require('collections/category').CategoryCollection
+
 class exports.CategoryView extends Backbone.View
   id: 'category-view'
 
@@ -9,8 +14,32 @@ class exports.CategoryView extends Backbone.View
 
   ### Events ###
 
+
+  ### Constructor ###
+
   constructor: ->
     super()
+
+    @articles = new ArticleCollection()
+
+  ### Listeners ###
+
+  setListeners: =>
+    @articlees.bind('reset', @fillArticles)
+    @addButton.click(@onAddArticleClicked)
+
+
+  onDeleteButtonClicked : (event) =>
+    event.preventDefault()
+    
+    @model.destroy
+      success: ->
+        app.routers.main.navigate("home", true)
+      error: ->
+        alert "An error occured, category was probably not deleted."
+ 
+
+  ### Functions ###
 
   render: (category) ->
     $("#nav-content").html null
@@ -21,12 +50,5 @@ class exports.CategoryView extends Backbone.View
       @deleteButton = $("#delete-category-button")
       @deleteButton.click(@onDeleteButtonClicked)
 
-  onDeleteButtonClicked : (event) =>
-    event.preventDefault()
-    
-    @model.destroy
-      success: ->
-        app.routers.main.navigate("home", true)
-      error: ->
-        alert "An error occured, category was probably not deleted."
-        app.routers.main.navigate("home", true)
+      @articles.fetch()
+

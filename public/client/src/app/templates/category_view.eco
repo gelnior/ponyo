@@ -1,9 +1,15 @@
 <p>
   <a id="back-categories" href="#home">Back to categories</a>
 </p>
-<p>
+<h1>
   <%= @category.name %>
-</p>
+</h1>
+<p>Add an article</p>
+<input id="article-field" type="text">
+<input id="article-add-submit" type="submit" value="Add category">
+<h2>Articles</h2>
+<ul id="article-list">
+</ul>
 <p>
   <a id="delete-category-button" href="#home">
     Delete category
