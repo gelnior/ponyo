@@ -1,6 +1,5 @@
 describe 'Category browsing', ->
 
-    
   it 'Add Category jasmine', ->
     waitsFor(
       -> $("#category-field").length > 0
@@ -14,7 +13,6 @@ describe 'Category browsing', ->
     runs ->
       expect($("#category-jasmine").length).not.toEqual(0)
 
-    
   it 'Displays Category jasmine', ->
     runs ->
       $("#category-jasmine").click()
@@ -22,7 +20,6 @@ describe 'Category browsing', ->
     runs ->
       expect($("#back-categories").length).not.toEqual(0)
 
-    
   it 'Goes back to category list', ->
     runs ->
       $("#back-categories").click()
