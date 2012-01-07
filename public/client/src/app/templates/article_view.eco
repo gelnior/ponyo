@@ -1,0 +1,12 @@
+<p>
+  <a id="back-category" href="#home">Back to category</a>
+</p>
+<h1>
+  <%= @article.name %>
+</h1>
+<h2>Content</h2>
+<div id="article-content">
+  <%= @article.content %>
+</div>
+<p><%= @article.date %></p>
+
