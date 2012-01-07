@@ -45,6 +45,9 @@ assertJSONHead = ->
 
 vows.describe('Resources')
 
+
+# Categories
+
   .addBatch
     'A category provider':
       topic: () ->
@@ -144,6 +147,46 @@ vows.describe('Resources')
          topic: () ->
            apiTest.del 'categories/category-02/', @callback
          'response should be with a 404 Not Found': assertStatus 404
+
+# Articles
+
+  .addBatch
+    'An article provider':
+      topic: () ->
+        new ArticleProvider
+
+      'deletes all articles':
+        topic: (articleProvider) ->
+           articleProvider.deleteAll @callback
+  
+        'without any error': (err) ->
+           assert.isUndefined err.stack
+  
+
+  .addBatch
+    'An article provider':
+      topic: () ->
+        new ArticleProvider
+
+      'creates a new article':
+        topic: (articleProvider) ->
+          categoryProvider.newArticle "Category 01", "Article 01", @callback
+
+        'that has now an id': (doc) ->
+          assert.isNotNull doc._id
+  
+
+  .addBatch
+    'GET /articles/':
+      topic: () ->
+        apiTest.get 'categories/category-01/articles/', @callback
+
+      'response should be with a 200 OK': assertStatus 200
+      'response should contains one article': (error, response, body) ->
+         docs = body.rows
+         assert.equal 1, docs.length
+         assert.equal "Article 01", docs[0].name
+
 
   .export(module)
 
