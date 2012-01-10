@@ -17,8 +17,23 @@ categorySchema = new Schema
   extraFields : [extraField]
 
 Category = mongoose.model('Category', categorySchema)
+exports.Category = Category
+
+articleSchema = new Schema
+  name: String
+  slug: type : String, lowercase : true
+  content: String
+  date : Date
+  author : String
+  published : Boolean
+  categoryName: String
+  categorySlug: String
+
+Article = mongoose.model('Article', articleSchema)
+
 
 # Providers
+
 class CategoryProvider
   
   # Get all categories.
@@ -37,6 +52,7 @@ class CategoryProvider
     query = Category.find { "slug": slug }
     query.limit 1
     query.exec callback
+    return
 
   # Create a new category if it does not exist.
   newCategory: (name, callback) ->
@@ -50,5 +66,43 @@ class CategoryProvider
     return
  
 exports.CategoryProvider = CategoryProvider
+
+
+# Articles
+
+class ArticleProvider
+  
+  # Get all categories.
+  getAll: (callback) ->
+    query = Article.find {}
+    query.exec callback
+    return
+
+  # Delete all categories
+  deleteAll: (callback) ->
+    query = Article.remove {}, callback
+    return
+
+  # Get a category from its slug.
+  getArticle: (category, slug, callback) ->
+    query = Article.find "slug": slug, "categorySlug": category.slug, "date": date
+    query.limit 1
+    query.exec callback
+    return
+
+  # Create a new category if it does not exist.
+  newArticle: (category, name, callback) ->
+   
+    article = new Article
+      name: name,
+      slug: name.slugify(),
+      date: new Date(),
+      categoryName: category.name,
+      categorySlug: category.slug,
+    
+    article.save callback
+    return
+ 
+exports.ArticleProvider = ArticleProvider
 
 
