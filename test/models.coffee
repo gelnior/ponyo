@@ -2,9 +2,12 @@ vows = require('vows')
 eyes = require('eyes')
 assert = require('assert')
 CategoryProvider = require("../models/models").CategoryProvider
+ArticleProvider = require("../models/models").ArticleProvider
+
+Category = require("../models/models").Category
 
 
-vows.describe('Categories')
+vows.describe('Categories and articles')
 
   .addBatch(
     'A category provider':
@@ -42,7 +45,7 @@ vows.describe('Categories')
           categoryProvider.getCategory "category-01", @callback
 
         'that returns only one document': (err, docs) ->
-          assert.equal docs.length, 1
+          assert.equal 1, docs.length
           
         'with right name and right slug': (err, docs) ->
           category = docs[0]
@@ -66,7 +69,46 @@ vows.describe('Categories')
   )
 
 
+  .addBatch(
+    'An article provider':
+      topic: () ->
+        new ArticleProvider
+
+      'deletes all articles':
+        topic: (articleProvider) ->
+           articleProvider.deleteAll @callback
+  
+        'without any error': (err) ->
+           assert.isUndefined err.stack
+  )
+
+ .addBatch(
+    'An article provider':
+      topic: () ->
+        new ArticleProvider
+
+      'creates a new article':
+        topic: (articleProvider) ->
+          cat = new Category name: "Category 01", slug: "category-01"
+          articleProvider.newArticle cat, "Article 01", @callback
+ 
+        'that has now an id': (doc) ->
+            assert.notEqual undefined, doc
+            assert.isNotNull doc._id
+  )
+
+  .addBatch(
+    'An article provider':
+      topic: () ->
+        new ArticleProvider
+
+      'gets all article':
+        topic: (articleProvider) ->
+          articleProvider.getAll @callback
+
+        'and find one article': (docs) ->
+          assert.equal 1, docs.length
+  )
 
   .export(module)
-
 
