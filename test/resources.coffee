@@ -5,6 +5,8 @@ vows = require('vows')
 eyes = require('eyes')
 assert = require('assert')
 CategoryProvider = require("../models/models").CategoryProvider
+ArticleProvider = require("../models/models").ArticleProvider
+Category = require("../models/models").Category
 
 rootUrl = "http://localhost:3000/"
 cookie = null
@@ -32,6 +34,7 @@ apiTest =
 
 assertStatus = (code) ->
   (error, response, body) ->
+    assert.notEqual undefined, response
     assert.equal response.statusCode, code
     assert.ok response.body
 
@@ -170,23 +173,29 @@ vows.describe('Resources')
 
       'creates a new article':
         topic: (articleProvider) ->
-          categoryProvider.newArticle "Category 01", "Article 01", @callback
+          category = new Category name: "Category 01", slug: "category-01"
+
+          articleProvider.newArticle category, "Article 01", @callback
 
         'that has now an id': (doc) ->
+          assert.notEqual undefined, doc
           assert.isNotNull doc._id
   
 
   .addBatch
-    'GET /articles/':
+    'GET /categories/category-01/articles/':
       topic: () ->
         apiTest.get 'categories/category-01/articles/', @callback
 
       'response should be with a 200 OK': assertStatus 200
       'response should contains one article': (error, response, body) ->
+         assert.notEqual undefined, body
+
          docs = body.rows
+         assert.notEqual undefined, docs
+
          assert.equal 1, docs.length
          assert.equal "Article 01", docs[0].name
-
-
+  
   .export(module)
 
