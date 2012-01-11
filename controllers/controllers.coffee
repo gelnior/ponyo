@@ -1,5 +1,6 @@
 # Models
 CategoryProvider = require("../models/models").CategoryProvider
+ArticleProvider = require("../models/models").ArticleProvider
 
 
 # Home page
@@ -8,6 +9,7 @@ exports.index = (req, res) ->
 
 exports.indexTest = (req, res) ->
   res.render "index", title: "Ponyo", test: true
+
 
 # Category list
 exports.getCategories = (req, res)  ->
@@ -33,7 +35,7 @@ exports.newCategory = (req, res) ->
   else
     return res.json success: false
 
-# Category Deletion
+# Category deletion
 exports.deleteCategory = (req, res) ->
   categoryProvider = new CategoryProvider
 
@@ -62,5 +64,30 @@ exports.category = (req, res) ->
       res.json docs[0]
     else
       res.json 'I dont have that', 404
+
+
+
+# Article list
+exports.getArticles = (req, res)  ->
+  categoryProvider = new CategoryProvider
+  articleProvider = new ArticleProvider
+
+  categoryProvider.getCategory req.params.category, (err, docs) ->
+    if err
+      console.error(err.stack)
+      res.json 'An error occured', 500
+    else if docs.length > 0
+      category = docs[0]
+        
+      articleProvider.getAll category, (err, docs) ->
+        if err
+          console.error(err.stack)
+          res.json 'An error occured', 500
+        else
+          res.json rows: docs
+
+    else
+      res.json 'Category not found', 404
+
 
 
