@@ -73,8 +73,8 @@ exports.CategoryProvider = CategoryProvider
 class ArticleProvider
   
   # Get all categories.
-  getAll: (callback) ->
-    query = Article.find {}
+  getAll: (category, callback) ->
+    query = Article.find { categorySlug: category.slug }
     query.exec callback
     return
 
@@ -85,7 +85,10 @@ class ArticleProvider
 
   # Get a category from its slug.
   getArticle: (category, slug, callback) ->
-    query = Article.find "slug": slug, "categorySlug": category.slug, "date": date
+    query = Article.find
+        "slug": slug,
+        "categorySlug": category.slug,
+        "date": date
     query.limit 1
     query.exec callback
     return
