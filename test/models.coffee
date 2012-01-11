@@ -87,7 +87,7 @@ vows.describe('Categories and articles')
       topic: () ->
         new ArticleProvider
 
-      'creates a new article':
+      'creates a new article for category 01':
         topic: (articleProvider) ->
           cat = new Category name: "Category 01", slug: "category-01"
           articleProvider.newArticle cat, "Article 01", @callback
@@ -102,9 +102,10 @@ vows.describe('Categories and articles')
       topic: () ->
         new ArticleProvider
 
-      'gets all article':
+      'gets all article for category 01':
         topic: (articleProvider) ->
-          articleProvider.getAll @callback
+          cat = new Category name: "Category 01", slug: "category-01"
+          articleProvider.getAll cat, @callback
 
         'and find one article': (docs) ->
           assert.equal 1, docs.length
