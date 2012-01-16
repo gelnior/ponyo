@@ -72,34 +72,33 @@ exports.CategoryProvider = CategoryProvider
 
 class ArticleProvider
   
-  # Get all categories.
+  # Get all article for given category.
   getAll: (category, callback) ->
     query = Article.find { categorySlug: category.slug }
     query.exec callback
     return
 
-  # Delete all categories
+  # Delete all articles
   deleteAll: (callback) ->
     query = Article.remove {}, callback
     return
 
-  # Get a category from its slug.
-  getArticle: (category, slug, callback) ->
+  # Get an article from its slug, date and category.
+  getArticle: (category, date, slug, callback) ->
     query = Article.find
+        "date": date,
         "slug": slug,
-        "categorySlug": category.slug,
-        "date": date
+        "categorySlug": category.slug
     query.limit 1
     query.exec callback
     return
 
-  # Create a new category if it does not exist.
-  newArticle: (category, name, callback) ->
+  newArticle: (category, name, date, callback) ->
    
     article = new Article
       name: name,
       slug: name.slugify(),
-      date: new Date(),
+      date: date,
       categoryName: category.name,
       categorySlug: category.slug,
     
