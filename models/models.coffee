@@ -93,6 +93,7 @@ class ArticleProvider
     query.exec callback
     return
 
+  # Create a new article for given category. 
   newArticle: (category, name, date, callback) ->
    
     article = new Article
