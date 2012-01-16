@@ -1,6 +1,8 @@
 vows = require('vows')
 eyes = require('eyes')
 assert = require('assert')
+time = require('time')(Date)
+
 CategoryProvider = require("../models/models").CategoryProvider
 ArticleProvider = require("../models/models").ArticleProvider
 
@@ -90,7 +92,14 @@ vows.describe('Categories and articles')
       'creates a new article for category 01':
         topic: (articleProvider) ->
           cat = new Category name: "Category 01", slug: "category-01"
-          articleProvider.newArticle cat, "Article 01", @callback
+         
+          date = new time.Date()
+          date.setTimezone("UTC")
+          date.setMinutes(0)
+          date.setHours(0)
+          date.setSeconds(0)
+          date.setMilliseconds(0)
+          articleProvider.newArticle cat, "Article 01", date, @callback
  
         'that has now an id': (doc) ->
             assert.notEqual undefined, doc
@@ -109,6 +118,27 @@ vows.describe('Categories and articles')
 
         'and find one article': (docs) ->
           assert.equal 1, docs.length
+  )
+
+
+  .addBatch(
+    'An article provider':
+      topic: () ->
+        new ArticleProvider
+
+      'gets a given article for category 01':
+        topic: (articleProvider) ->
+          date = new time.Date()
+          date.setTimezone("UTC")
+          date.setMinutes(0)
+          date.setHours(0)
+          date.setSeconds(0)
+          date.setMilliseconds(0)
+          cat = new Category name: "Category 01", slug: "category-01"
+          articleProvider.getArticle cat, date, "article-01", @callback
+
+        'and find corresponding article': (docs) ->
+          assert.equal docs[0].slug, "article-01"
   )
 
   .export(module)
