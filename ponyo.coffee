@@ -1,3 +1,4 @@
+process.env.TZ = 'UTC'
 express = require("express")
 
 
