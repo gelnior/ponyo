@@ -15,7 +15,6 @@ describe 'Article creation', ->
   it 'And I click on add button', ->
     runs ->
       $("#article-add-submit").click()
-      expect(false).toBeTruthy()
     waits(500)
 
   it 'Then a new article with given title is displayed', ->
