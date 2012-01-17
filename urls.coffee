@@ -13,6 +13,8 @@ module.exports = (app) ->
 
   # Article
   app.get "/categories/:category/articles/", routers.getArticles
-  app.post "/categories/:category/articles/", routers.newArticles
+  app.post "/categories/:category/articles/", routers.newArticle
+  app.get "/categories/:category/articles/:year/:month/:day/:article", \
+      routers.getArticle
 
 
