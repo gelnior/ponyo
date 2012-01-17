@@ -1,3 +1,5 @@
+time = require('time')
+
 # Models
 CategoryProvider = require("../models/models").CategoryProvider
 ArticleProvider = require("../models/models").ArticleProvider
@@ -53,7 +55,7 @@ exports.deleteCategory = (req, res) ->
     else
       res.json 'I dont have that', 404
 
-# Category page
+# Category object
 exports.category = (req, res) ->
   categoryProvider = new CategoryProvider
   categoryProvider.getCategory req.params.category, (err, docs) ->
@@ -89,5 +91,74 @@ exports.getArticles = (req, res)  ->
     else
       res.json 'Category not found', 404
 
+
+getArticleFromRequestDate = (date, req, res, callback) ->
+  categoryProvider = new CategoryProvider
+  articleProvider = new ArticleProvider
+
+  catSlug = req.params.category
+  articleSlug = req.params.article
+
+  categoryProvider.getCategory catSlug, (err, docs) ->
+
+    if err
+      console.error(err.stack)
+      res.json 'An error occured', 500
+
+    else if docs.length > 0
+      category = docs[0]
+      articleProvider.getArticle category, date, articleSlug, (err, docs) ->
+        if err
+          console.error(err.stack)
+          res.json 'An error occured', 500
+        else
+          callback(category, docs)
+    else
+      res.json 'Category not found', 404
+
+
+
+# Article object
+exports.getArticle = (req, res) ->
+  year = parseInt(req.params.year)
+  month = parseInt(req.params.month)
+  day = parseInt(req.params.day)
+  mydate = new time.Date(year, month - 1, day, 0, 0, 0, 0)
+
+  getArticleFromRequestDate mydate, req, res, (category, docs) ->
+    console.log docs
+    if docs.length > 0
+      res.json docs[0]
+    else
+      res.json 'I dont have that', 404
+
+
+# Article creation
+exports.newArticle = (req, res) ->
+
+  date = new time.Date()
+  date.setTimezone("UTC")
+  date.setMinutes(0)
+  date.setHours(0)
+  date.setSeconds(0)
+  date.setMilliseconds(0)
+
+  getArticleFromRequestDate date, req, res, (category, docs) ->
+    articleProvider = new ArticleProvider
+
+    if docs.length > 0
+      res.json 'Article already exists', 400
+    else
+        name = req.body.name
+
+       if name
+         articleProvider.newArticle category, name, date, (err) ->
+           if err
+             console.error(err.stack)
+             return res.json  success: false
+           else
+             return res.json  success: true
+    else
+      return res.json success: false
 
 
