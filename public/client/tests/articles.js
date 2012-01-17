@@ -17,8 +17,7 @@
     });
     it('And I click on add button', function() {
       runs(function() {
-        $("#article-add-submit").click();
-        return expect(false).toBeTruthy();
+        return $("#article-add-submit").click();
       });
       return waits(500);
     });
