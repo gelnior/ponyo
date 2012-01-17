@@ -1,9 +1,13 @@
-http = require('http')
+process.env.TZ = 'UTC'
 
+http = require('http')
 request = require('request')
 vows = require('vows')
 eyes = require('eyes')
 assert = require('assert')
+time = require('time')(Date)
+moment = require('moment')
+
 CategoryProvider = require("../models/models").CategoryProvider
 ArticleProvider = require("../models/models").ArticleProvider
 Category = require("../models/models").Category
@@ -175,7 +179,8 @@ vows.describe('Resources')
         topic: (articleProvider) ->
           category = new Category name: "Category 01", slug: "category-01"
 
-          articleProvider.newArticle category, "Article 01", @callback
+          date = new Date(2012, 0, 5, 0, 0, 0, 0)
+          articleProvider.newArticle category, "Article 01", date, @callback
 
         'that has now an id': (doc) ->
           assert.notEqual undefined, doc
@@ -196,6 +201,45 @@ vows.describe('Resources')
 
          assert.equal 1, docs.length
          assert.equal "Article 01", docs[0].name
-  
+
+  .addBatch
+    'GET /categories/category-01/articles/2012/01/05/article-01/':
+      topic: () ->
+        apiTest.get 'categories/category-01/articles/2012/01/05/article-01/', \
+          @callback
+
+      'response should be with a 200 OK': assertStatus 200
+      'response should contains one article': (error, response, body) ->
+        assert.equal body.name, "Article 01"
+
+  .addBatch
+    'POST /categories/category-01/articles/':
+      topic: () ->
+        apiTest.post 'categories/category-01/articles/', \
+          name: "Article 02", @callback
+      'response should be with a 200 OK':assertStatus 200
+      'respond body should tell that creation succeeds':
+        (error, response, body) ->
+          assert.ok body.success
+
+  .addBatch
+    'GET /categories/category-01/articles/yyyy/mm/dd/article-02/':
+      topic: () ->
+        date = new time.Date()
+        date.setTimezone("UTC")
+        date.setMinutes(0)
+        date.setHours(0)
+        date.setSeconds(0)
+        date.setMilliseconds(0)
+        url = 'categories/category-01/articles/'
+        url += moment(date).format("YYYY/MM/DD/")
+        url += 'article-02/'
+
+        apiTest.get url, @callback
+
+      'response should be with a 200 OK': assertStatus 200
+      'response should contains one article': (error, response, body) ->
+        assert.equal body.name, "Article 02"
+
   .export(module)
 
