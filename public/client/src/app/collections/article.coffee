@@ -1,12 +1,13 @@
-Article = require("models/article").Category
+Article = require("models/article").Article
 
 class exports.ArticleCollection extends Backbone.Collection
 
   model: Article
-  url: '/articles/'
+  url: '/categories/articles/'
 
-  constructor: () ->
+  constructor: (category) ->
     super()
+    @url = "/categories/#{category.slug}/articles/"
 
   # Select which field from backend response to use for parsing to populate
   # collection.

@@ -6,7 +6,7 @@
 </h1>
 <p>Add an article</p>
 <input id="article-field" type="text">
-<input id="article-add-submit" type="submit" value="Add category">
+<input id="article-add-submit" type="submit" value="Add article">
 <h2>Articles</h2>
 <ul id="article-list">
 </ul>

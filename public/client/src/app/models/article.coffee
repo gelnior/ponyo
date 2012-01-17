@@ -8,8 +8,8 @@ class exports.Article extends Backbone.Model
     @name = article.name
     @slug = article.slug
     @content = article.content
-    @author = author.content
-    @date = date.content
+    @author = article.content
+    @date = article.date
     @id = article.id
 
     @url += @id + "/"
