@@ -26,6 +26,19 @@ class exports.CategoryView extends Backbone.View
   setListeners: =>
     @addButton.click(@onAddArticleClicked)
 
+  onAddCategoryClicked: (event) =>
+    categoryName = @articleField .val()
+
+    $.ajax(
+      type: 'POST',
+      url: @articleCollection.url,
+      data: { name: categoryName },
+      success: =>
+        @categoryList.append(
+          "<li id=\"#{categoryName.slugify()}\">#{categoryName}</li>")
+      ,
+      dataType: "json",
+    )
 
   onDeleteButtonClicked : (event) =>
     event.preventDefault()
@@ -57,6 +70,8 @@ class exports.CategoryView extends Backbone.View
       @deleteButton = $("#delete-category-button")
       @deleteButton.click(@onDeleteButtonClicked)
 
+      @addButton = $("article-add-submit")
+      @articleField = $("article-field")
       @articleList = $("#article-list")
 
       @articles = new ArticleCollection(data)
