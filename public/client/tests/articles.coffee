@@ -2,11 +2,12 @@ describe 'Article creation', ->
 
   it 'Given I browse a category', ->
     runs ->
-      if $("#category-jasmine").length == 0
-        $("#category-field").val("Category Jasmine")
-        $("#category-add-submit").click()
-        waits(300)
+      $("#category-field").val("Category Jasmine")
+      $("#category-add-submit").click()
+    waits(300)
+    runs ->
       $("#category-jasmine").click()
+    waits(300)
 
   it 'When I fill the new article title field', ->
     runs ->
@@ -17,17 +18,21 @@ describe 'Article creation', ->
       $("#article-add-submit").click()
     waits(500)
 
-  it 'Then a new article with given title is displayed', ->
+  it 'Then a new article with given title and actual date is displayed', ->
     runs ->
-      expect($("#article-jasmine").length).not.toEqual(0)
+      date = moment().format("YYYY-MM-DD-")
+      expect($("##{date}article-jasmine").length).not.toEqual(0)
 
 
 describe 'Article browsing', ->
 
   it 'When I click on an article', ->
-    $("#article-jasmine").click()
+    runs ->
+      date = moment().format("YYYY-MM-DD-")
+      $("##{date}article-jasmine").click()
+    waits(300)
 
   it 'Then I display the article page', ->
     runs ->
-      expect($("#article-jasmine-title").length).not.toEqual(0)
+      expect($(".article-title").length).not.toEqual(0)
 
