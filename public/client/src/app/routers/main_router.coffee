@@ -2,7 +2,7 @@ class exports.MainRouter extends Backbone.Router
   routes :
     "home": "home"
     "categories/:category": "category"
-    "categories/:category/articles/:article": "article"
+    "categories/:category/articles/:year/:month/:day/:article/": "article"
 
   home: ->
     app.views.home.render()
@@ -10,6 +10,6 @@ class exports.MainRouter extends Backbone.Router
   category: (category) ->
     app.views.category.render(category)
 
-  category: (category, article) ->
-    app.views.category.render(category, article)
+  article: (category, year, month, day, article) ->
+    app.views.article.render(category, year, month, day, article)
 

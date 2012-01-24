@@ -1,8 +1,9 @@
 require("utils/string")
 
 categoryTemplate = require('templates/categories')
-CategoryRow = require('views/category').CategoryRow
+Category = require('models/category').Category
 CategoryCollection = require('collections/category').CategoryCollection
+CategoryRow = require('views/category').CategoryRow
 
 
 # Main view : display category list. Allows to create a new category and 
@@ -41,22 +42,28 @@ class exports.HomeView extends Backbone.View
       url: "/categories/",
       data: { name: categoryName },
       success: =>
-        @categoryList.append(
-          "<li id=\"#{categoryName.slugify()}\">#{categoryName}</li>")
+        category = new Category
+          "name": categoryName
+          "slug": categoryName.slugify()
+        @addCategoryToCategoryList category
       ,
-      dataType: "json",
+      dataType: "json"
     )
 
   ### Functions ###
 
   # Grabs categories from server then display them as a list.
-  fillCategories: () =>
+  fillCategories:  =>
     @categoryList.html null
-    @categories.forEach (category) =>
-      categoryRow = new CategoryRow category
-      el = categoryRow.render()
-      @categoryList.append el
-      el.id = category.slug
+    @categories.forEach @addCategoryToCategoryList
+    
+  # From a category Model build the category widget to display inside 
+  # category list.
+  addCategoryToCategoryList: (category) =>
+    categoryRow = new CategoryRow category
+    el = categoryRow.render()
+    @categoryList.append el
+    el.id = category.slug
  
 
   ### Render ###

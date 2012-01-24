@@ -17,7 +17,7 @@ class exports.ArticleRow extends Backbone.View
 
   onClicked: (event) ->
     app.routers.main.navigate \
-        "categories/#{@model.category.slug}/articles/#{@model.slug}", true
+        "categories/#{@model.categorySlug}/articles#{@model.path}", true
 
   remove: ->
     $(@el).remove()

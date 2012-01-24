@@ -10994,19 +10994,19 @@ window.jQuery = window.$ = jQuery;
 (function(/*! Stitch !*/) {
   if (!this.require) {
     var modules = {}, cache = {}, require = function(name, root) {
-      var module = cache[name], path = expand(root, name), fn;
+      var path = expand(root, name), module = cache[path], fn;
       if (module) {
-        return module;
+        return module.exports;
       } else if (fn = modules[path] || modules[path = expand(path, './index')]) {
-        module = {id: name, exports: {}};
+        module = {id: path, exports: {}};
         try {
-          cache[name] = module.exports;
+          cache[path] = module;
           fn(module.exports, function(name) {
             return require(name, dirname(path));
           }, module);
-          return cache[name] = module.exports;
+          return module.exports;
         } catch (err) {
-          delete cache[name];
+          delete cache[path];
           throw err;
         }
       } else {
@@ -11041,21 +11041,23 @@ window.jQuery = window.$ = jQuery;
   }
   return this.require.define;
 }).call(this)({"collections/article": function(exports, require, module) {(function() {
-  var Article;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+  var Article,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  Article = require("models/article").Category;
+  Article = require("models/article").Article;
 
-  exports.ArticleCollection = (function() {
+  exports.ArticleCollection = (function(_super) {
 
-    __extends(ArticleCollection, Backbone.Collection);
+    __extends(ArticleCollection, _super);
 
     ArticleCollection.prototype.model = Article;
 
-    ArticleCollection.prototype.url = '/articles/';
+    ArticleCollection.prototype.url = '/categories/articles/';
 
-    function ArticleCollection() {
+    function ArticleCollection(category) {
       ArticleCollection.__super__.constructor.call(this);
+      this.url = "/categories/" + category.slug + "/articles/";
     }
 
     ArticleCollection.prototype.parse = function(response) {
@@ -11064,18 +11066,19 @@ window.jQuery = window.$ = jQuery;
 
     return ArticleCollection;
 
-  })();
+  })(Backbone.Collection);
 
 }).call(this);
 }, "collections/category": function(exports, require, module) {(function() {
-  var Category;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+  var Category,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   Category = require("models/category").Category;
 
-  exports.CategoryCollection = (function() {
+  exports.CategoryCollection = (function(_super) {
 
-    __extends(CategoryCollection, Backbone.Collection);
+    __extends(CategoryCollection, _super);
 
     CategoryCollection.prototype.model = Category;
 
@@ -11091,15 +11094,15 @@ window.jQuery = window.$ = jQuery;
 
     return CategoryCollection;
 
-  })();
+  })(Backbone.Collection);
 
 }).call(this);
-}, "main": function(exports, require, module) {(function() {
+}, "main": function(exports, require, module) {
+/* Application entry point
+*/
 
-  /* Application entry point
-  */
-
-  var CategoryView, HomeView, MainRouter;
+(function() {
+  var ArticleView, CategoryView, HomeView, MainRouter;
 
   window.app = {};
 
@@ -11117,11 +11120,14 @@ window.jQuery = window.$ = jQuery;
 
   CategoryView = require('views/category_view').CategoryView;
 
+  ArticleView = require('views/article_view').ArticleView;
+
   $(document).ready(function() {
     app.initialize = function() {
       app.routers.main = new MainRouter();
       app.views.home = new HomeView();
       app.views.category = new CategoryView();
+      app.views.article = new ArticleView();
       if (Backbone.history.getFragment() === '') {
         return app.routers.main.navigate('home', true);
       }
@@ -11132,11 +11138,12 @@ window.jQuery = window.$ = jQuery;
 
 }).call(this);
 }, "models/article": function(exports, require, module) {(function() {
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+  var __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  exports.Article = (function() {
+  exports.Article = (function(_super) {
 
-    __extends(Article, Backbone.Model);
+    __extends(Article, _super);
 
     Article.prototype.url = '/categories/';
 
@@ -11145,10 +11152,15 @@ window.jQuery = window.$ = jQuery;
       this.name = article.name;
       this.slug = article.slug;
       this.content = article.content;
-      this.author = author.content;
-      this.date = date.content;
+      this.author = article.author;
+      this.date = Date.parse(article.date);
       this.id = article.id;
-      this.url += this.id + "/";
+      this.categorySlug = article.categorySlug;
+      this.categoryName = article.categoryName;
+      this.dateToDisplay = moment(this.date).format("YYYY/MM/DD");
+      this.dateSlug = moment(this.date).format("YYYY-MM-DD-") + this.slug;
+      this.path = "/" + this.dateToDisplay + "/" + this.slug + "/";
+      this.url = "/categories/" + this.categorySlug + "/articles/" + this.path;
     }
 
     Article.prototype.isNew = function() {
@@ -11157,15 +11169,16 @@ window.jQuery = window.$ = jQuery;
 
     return Article;
 
-  })();
+  })(Backbone.Model);
 
 }).call(this);
 }, "models/category": function(exports, require, module) {(function() {
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+  var __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  exports.Category = (function() {
+  exports.Category = (function(_super) {
 
-    __extends(Category, Backbone.Model);
+    __extends(Category, _super);
 
     Category.prototype.url = '/categories/';
 
@@ -11183,15 +11196,16 @@ window.jQuery = window.$ = jQuery;
 
     return Category;
 
-  })();
+  })(Backbone.Model);
 
 }).call(this);
 }, "routers/main_router": function(exports, require, module) {(function() {
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+  var __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  exports.MainRouter = (function() {
+  exports.MainRouter = (function(_super) {
 
-    __extends(MainRouter, Backbone.Router);
+    __extends(MainRouter, _super);
 
     function MainRouter() {
       MainRouter.__super__.constructor.apply(this, arguments);
@@ -11200,7 +11214,7 @@ window.jQuery = window.$ = jQuery;
     MainRouter.prototype.routes = {
       "home": "home",
       "categories/:category": "category",
-      "categories/:category/articles/:article": "article"
+      "categories/:category/articles/:year/:month/:day/:article/": "article"
     };
 
     MainRouter.prototype.home = function() {
@@ -11211,13 +11225,13 @@ window.jQuery = window.$ = jQuery;
       return app.views.category.render(category);
     };
 
-    MainRouter.prototype.category = function(category, article) {
-      return app.views.category.render(category, article);
+    MainRouter.prototype.article = function(category, year, month, day, article) {
+      return app.views.article.render(category, year, month, day, article);
     };
 
     return MainRouter;
 
-  })();
+  })(Backbone.Router);
 
 }).call(this);
 }, "templates/article": function(exports, require, module) {module.exports = function(__obj) {
@@ -11258,14 +11272,17 @@ window.jQuery = window.$ = jQuery;
     };
   }
   (function() {
+    (function() {
     
-      __out.push(__sanitize(this.article.date));
+      __out.push(__sanitize(this.article.dateToDisplay));
     
       __out.push(' - ');
     
       __out.push(__sanitize(this.article.name));
     
       __out.push('\n');
+    
+    }).call(this);
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
@@ -11308,20 +11325,35 @@ window.jQuery = window.$ = jQuery;
     };
   }
   (function() {
+    (function() {
     
-      __out.push('<p>\n  <a id="back-category" href="#home">Back to category</a>\n</p>\n<h1>\n  ');
+      __out.push('<p>\n  <a id="back-category" href="#categories/');
+    
+      __out.push(__sanitize(this.article.categorySlug));
+    
+      __out.push('">\n    Back to category\n  </a>\n</p>\n<h4>\n  ');
+    
+      __out.push(__sanitize(this.article.categoryName));
+    
+      __out.push(' >>\n</h4>\n<h1 class="article-title">\n  ');
     
       __out.push(__sanitize(this.article.name));
     
-      __out.push('\n</h1>\n<h2>Content</h2>\n<div id="article-content">\n  ');
+      __out.push('\n</h1>\n<p>');
+    
+      __out.push(__sanitize(this.article.dateToDisplay));
+    
+      __out.push('</p>\n<p>');
+    
+      __out.push(__sanitize(this.article.author));
+    
+      __out.push('</p>\n<h2>Content</h2>\n<div id="article-content">\n  ');
     
       __out.push(__sanitize(this.article.content));
     
-      __out.push('\n</div>\n<p>');
+      __out.push('\n</div>\n\n');
     
-      __out.push(__sanitize(this.article.date));
-    
-      __out.push('</p>\n\n');
+    }).call(this);
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
@@ -11364,8 +11396,11 @@ window.jQuery = window.$ = jQuery;
     };
   }
   (function() {
+    (function() {
     
       __out.push('<div id="home-view">\n  <p>Add a category</p>\n  <p>\n    <input id="category-field" type="text">\n    <input id="category-add-submit" type="submit" value="Add category">\n\n    <ul id="category-list">\n    </ul>\n  </p>\n</div>\n');
+    
+    }).call(this);
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
@@ -11408,10 +11443,13 @@ window.jQuery = window.$ = jQuery;
     };
   }
   (function() {
+    (function() {
     
       __out.push(__sanitize(this.category.name));
     
       __out.push('\n');
+    
+    }).call(this);
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
@@ -11454,12 +11492,15 @@ window.jQuery = window.$ = jQuery;
     };
   }
   (function() {
+    (function() {
     
       __out.push('<p>\n  <a id="back-categories" href="#home">Back to categories</a>\n</p>\n<h1>\n  ');
     
       __out.push(__sanitize(this.category.name));
     
-      __out.push('\n</h1>\n<p>Add an article</p>\n<input id="article-field" type="text">\n<input id="article-add-submit" type="submit" value="Add category">\n<h2>Articles</h2>\n<ul id="article-list">\n</ul>\n<p>\n  <a id="delete-category-button" href="#home">\n    Delete category\n  </a>\n</p>\n');
+      __out.push('\n</h1>\n<p>Add an article</p>\n<input id="article-field" type="text">\n<input id="article-add-submit" type="submit" value="Add article">\n<h2>Articles</h2>\n<ul id="article-list">\n</ul>\n<p>\n  <a id="delete-category-button" href="#home">\n    Delete category\n  </a>\n</p>\n');
+    
+    }).call(this);
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
@@ -11502,13 +11543,17 @@ window.jQuery = window.$ = jQuery;
     };
   }
   (function() {
+    (function() {
     
       __out.push('<!-- START you can remove this -->\n<div id="content">\n  <span id="props">with coffee</span>\n  <h1>brunch</h1>\n  <h2>Welcome!</h2>\n  <ul>\n    <li><a href="http://brunchwithcoffee.com/#documentation">Documentation</a></li>\n    <li><a href="https://github.com/brunch/brunch/issues">Github Issues</a></li>\n    <li><a href="https://github.com/brunch/example-todos">Todos Example App</a></li>\n  </ul>\n</div>\n<!-- END you can remove this -->\n\n');
+    
+    }).call(this);
     
   }).call(__obj);
   __obj.safe = __objSafe, __obj.escape = __escape;
   return __out.join('');
-}}, "utils/string": function(exports, require, module) {
+}}, "utils/string": function(exports, require, module) {(function() {
+
   String.prototype.slugify = function() {
     var s, _slugify_hyphenate_re, _slugify_strip_re;
     _slugify_strip_re = /[^\w\s-]/g;
@@ -11517,15 +11562,18 @@ window.jQuery = window.$ = jQuery;
     s = s.replace(_slugify_hyphenate_re, '-');
     return s;
   };
+
+}).call(this);
 }, "views/article": function(exports, require, module) {(function() {
-  var articleTemplate;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+  var articleTemplate,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   articleTemplate = require('templates/article');
 
-  exports.ArticleRow = (function() {
+  exports.ArticleRow = (function(_super) {
 
-    __extends(ArticleRow, Backbone.View);
+    __extends(ArticleRow, _super);
 
     ArticleRow.prototype.tagName = "li";
 
@@ -11543,7 +11591,7 @@ window.jQuery = window.$ = jQuery;
     };
 
     ArticleRow.prototype.onClicked = function(event) {
-      return app.routers.main.navigate("categories/" + this.model.category.slug + "/articles/" + this.model.slug, true);
+      return app.routers.main.navigate("categories/" + this.model.categorySlug + "/articles" + this.model.path, true);
     };
 
     ArticleRow.prototype.remove = function() {
@@ -11559,18 +11607,90 @@ window.jQuery = window.$ = jQuery;
 
     return ArticleRow;
 
-  })();
+  })(Backbone.View);
+
+}).call(this);
+}, "views/article_view": function(exports, require, module) {(function() {
+  var Article, articleViewTemplate,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+  articleViewTemplate = require('../templates/article_view');
+
+  Article = require('../models/article').Article;
+
+  exports.ArticleView = (function(_super) {
+
+    __extends(ArticleView, _super);
+
+    ArticleView.prototype.id = 'article-view';
+
+    ArticleView.prototype.events = {
+      "click #delete-article-button": "onDeleteButtonClicked"
+    };
+
+    /* Events
+    */
+
+    /* Constructor
+    */
+
+    function ArticleView() {
+      this.onDeleteButtonClicked = __bind(this.onDeleteButtonClicked, this);
+      this.setListeners = __bind(this.setListeners, this);      ArticleView.__super__.constructor.call(this);
+    }
+
+    /* Listeners
+    */
+
+    ArticleView.prototype.setListeners = function() {
+      return this.deleteButton.click(this.onDeleteButtonClicked);
+    };
+
+    ArticleView.prototype.onDeleteButtonClicked = function(event) {
+      event.preventDefault();
+      return this.model.destroy({
+        success: function() {
+          return app.routers.main.navigate("categories/" + this.model.categorySlug, true);
+        },
+        error: function() {
+          return alert("An error occured, category was probably not deleted.");
+        }
+      });
+    };
+
+    /* Functions
+    */
+
+    ArticleView.prototype.render = function(category, year, month, day, article) {
+      var _this = this;
+      $("#nav-content").html(null);
+      return $.get(("/categories/" + category + "/articles/") + ("" + year + "/" + month + "/" + day + "/" + article), function(data) {
+        _this.model = new Article(data);
+        $("#nav-content").html(articleViewTemplate({
+          article: _this.model
+        }));
+        _this.deleteButton = $("#delete-category-button");
+        return _this.setListeners();
+      });
+    };
+
+    return ArticleView;
+
+  })(Backbone.View);
 
 }).call(this);
 }, "views/category": function(exports, require, module) {(function() {
-  var categoryTemplate;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+  var categoryTemplate,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   categoryTemplate = require('templates/category');
 
-  exports.CategoryRow = (function() {
+  exports.CategoryRow = (function(_super) {
 
-    __extends(CategoryRow, Backbone.View);
+    __extends(CategoryRow, _super);
 
     CategoryRow.prototype.tagName = "li";
 
@@ -11604,44 +11724,84 @@ window.jQuery = window.$ = jQuery;
 
     return CategoryRow;
 
-  })();
+  })(Backbone.View);
 
 }).call(this);
 }, "views/category_view": function(exports, require, module) {(function() {
-  var Category, categoryViewTemplate;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+  var Article, ArticleCollection, ArticleRow, Category, articleTemplate, categoryViewTemplate,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   categoryViewTemplate = require('../templates/category_view');
 
   Category = require('../models/category').Category;
 
-  exports.CategoryView = (function() {
+  articleTemplate = require('templates/article');
 
-    __extends(CategoryView, Backbone.View);
+  Article = require('models/article').Article;
+
+  ArticleRow = require('views/article').ArticleRow;
+
+  ArticleCollection = require('collections/article').ArticleCollection;
+
+  exports.CategoryView = (function(_super) {
+
+    __extends(CategoryView, _super);
 
     CategoryView.prototype.id = 'category-view';
 
     CategoryView.prototype.events = {
-      "click #delete-category-button": "onDeleteButtonClicked"
+      "click #delete-category-button": "onDeleteButtonClicked",
+      "click #article-add-submti": "onAddArticleClicked"
     };
 
     /* Events
     */
 
+    /* Constructor
+    */
+
     function CategoryView() {
-      this.onDeleteButtonClicked = __bind(this.onDeleteButtonClicked, this);      CategoryView.__super__.constructor.call(this);
+      this.addArticleToArticleList = __bind(this.addArticleToArticleList, this);
+      this.fillArticles = __bind(this.fillArticles, this);
+      this.onDeleteButtonClicked = __bind(this.onDeleteButtonClicked, this);
+      this.onAddArticleClicked = __bind(this.onAddArticleClicked, this);
+      this.setListeners = __bind(this.setListeners, this);      CategoryView.__super__.constructor.call(this);
     }
 
-    CategoryView.prototype.render = function(category) {
-      var _this = this;
-      $("#nav-content").html(null);
-      return $.get("/categories/" + category + "/", function(data) {
-        $("#nav-content").html(categoryViewTemplate({
-          category: data
-        }));
-        _this.model = new Category(data);
-        _this.deleteButton = $("#delete-category-button");
-        return _this.deleteButton.click(_this.onDeleteButtonClicked);
+    /* Listeners
+    */
+
+    CategoryView.prototype.setListeners = function() {
+      this.deleteButton.click(this.onDeleteButtonClicked);
+      return $("#article-add-submit").click(this.onAddArticleClicked);
+    };
+
+    CategoryView.prototype.onAddArticleClicked = function(event) {
+      var articleName,
+        _this = this;
+      articleName = this.articleField.val();
+      return $.ajax({
+        type: 'POST',
+        url: this.articles.url,
+        data: {
+          name: articleName
+        },
+        success: function() {
+          var article, date;
+          date = new Date();
+          date.setHours(0);
+          date.setMinutes(0);
+          date.setSeconds(0);
+          article = new Article({
+            "name": articleName,
+            "slug": articleName.slugify(),
+            "date": date
+          });
+          return _this.addArticleToArticleList(article);
+        },
+        dataType: "json"
       });
     };
 
@@ -11652,32 +11812,70 @@ window.jQuery = window.$ = jQuery;
           return app.routers.main.navigate("home", true);
         },
         error: function() {
-          alert("An error occured, category was probably not deleted.");
-          return app.routers.main.navigate("home", true);
+          return alert("An error occured, category was probably not deleted.");
         }
+      });
+    };
+
+    CategoryView.prototype.fillArticles = function() {
+      this.articleList.html(null);
+      return this.articles.forEach(this.addArticleToArticleList);
+    };
+
+    CategoryView.prototype.addArticleToArticleList = function(article) {
+      var articleRow, el;
+      articleRow = new ArticleRow(article);
+      el = articleRow.render();
+      this.articleList.append(el);
+      return el.id = article.dateSlug;
+    };
+
+    /* Functions
+    */
+
+    CategoryView.prototype.render = function(category) {
+      var _this = this;
+      $("#nav-content").html(null);
+      return $.get("/categories/" + category + "/", function(data) {
+        $("#nav-content").html(categoryViewTemplate({
+          category: data
+        }));
+        _this.model = new Category(data);
+        _this.deleteButton = $("#delete-category-button");
+        _this.addButton = $("#article-add-submit");
+        _this.articleField = $("#article-field");
+        _this.articleList = $("#article-list");
+        _this.setListeners();
+        _this.articles = new ArticleCollection(data);
+        _this.articles.bind('reset', _this.fillArticles);
+        return _this.articles.fetch();
       });
     };
 
     return CategoryView;
 
-  })();
+  })(Backbone.View);
 
 }).call(this);
 }, "views/home_view": function(exports, require, module) {(function() {
-  var CategoryCollection, CategoryRow, categoryTemplate;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+  var Category, CategoryCollection, CategoryRow, categoryTemplate,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   require("utils/string");
 
   categoryTemplate = require('templates/categories');
 
-  CategoryRow = require('views/category').CategoryRow;
+  Category = require('models/category').Category;
 
   CategoryCollection = require('collections/category').CategoryCollection;
 
-  exports.HomeView = (function() {
+  CategoryRow = require('views/category').CategoryRow;
 
-    __extends(HomeView, Backbone.View);
+  exports.HomeView = (function(_super) {
+
+    __extends(HomeView, _super);
 
     HomeView.prototype.id = 'home-view';
 
@@ -11692,6 +11890,7 @@ window.jQuery = window.$ = jQuery;
     */
 
     function HomeView() {
+      this.addCategoryToCategoryList = __bind(this.addCategoryToCategoryList, this);
       this.fillCategories = __bind(this.fillCategories, this);
       this.onAddCategoryClicked = __bind(this.onAddCategoryClicked, this);
       this.setListeners = __bind(this.setListeners, this);      HomeView.__super__.constructor.call(this);
@@ -11707,8 +11906,8 @@ window.jQuery = window.$ = jQuery;
     };
 
     HomeView.prototype.onAddCategoryClicked = function(event) {
-      var categoryName;
-      var _this = this;
+      var categoryName,
+        _this = this;
       categoryName = this.categoryField.val();
       return $.ajax({
         type: 'POST',
@@ -11717,7 +11916,12 @@ window.jQuery = window.$ = jQuery;
           name: categoryName
         },
         success: function() {
-          return _this.categoryList.append("<li id=\"" + (categoryName.slugify()) + "\">" + categoryName + "</li>");
+          var category;
+          category = new Category({
+            "name": categoryName,
+            "slug": categoryName.slugify()
+          });
+          return _this.addCategoryToCategoryList(category);
         },
         dataType: "json"
       });
@@ -11727,15 +11931,16 @@ window.jQuery = window.$ = jQuery;
     */
 
     HomeView.prototype.fillCategories = function() {
-      var _this = this;
       this.categoryList.html(null);
-      return this.categories.forEach(function(category) {
-        var categoryRow, el;
-        categoryRow = new CategoryRow(category);
-        el = categoryRow.render();
-        _this.categoryList.append(el);
-        return el.id = category.slug;
-      });
+      return this.categories.forEach(this.addCategoryToCategoryList);
+    };
+
+    HomeView.prototype.addCategoryToCategoryList = function(category) {
+      var categoryRow, el;
+      categoryRow = new CategoryRow(category);
+      el = categoryRow.render();
+      this.categoryList.append(el);
+      return el.id = category.slug;
     };
 
     /* Render
@@ -11754,7 +11959,7 @@ window.jQuery = window.$ = jQuery;
 
     return HomeView;
 
-  })();
+  })(Backbone.View);
 
 }).call(this);
 }});

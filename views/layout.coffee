@@ -9,6 +9,7 @@ html ->
     link rel: 'icon', href: '/favicon.png'
     link rel: 'stylesheet', href: '/stylesheets/style.css'
   
+    script src: '/js/moment.min.js'
     script src: '/client/build/web/js/app.js'
     
     if @test

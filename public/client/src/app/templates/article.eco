@@ -1,1 +1,1 @@
-<%= @article.date %> - <%= @article.name %>
+<%= @article.dateToDisplay %> - <%= @article.name %>

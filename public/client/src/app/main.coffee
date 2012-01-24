@@ -9,6 +9,7 @@ app.views = {}
 MainRouter = require('routers/main_router').MainRouter
 HomeView = require('views/home_view').HomeView
 CategoryView = require('views/category_view').CategoryView
+ArticleView = require('views/article_view').ArticleView
 
 # app bootstrapping on document ready
 $(document).ready ->
@@ -20,6 +21,7 @@ $(document).ready ->
     # Views
     app.views.home = new HomeView()
     app.views.category = new CategoryView()
+    app.views.article = new ArticleView()
 
     # Initialize app route 
     app.routers.main.navigate 'home', true if Backbone.history.getFragment() is ''
