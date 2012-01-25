@@ -60,7 +60,7 @@ vows.describe('Resources')
       topic: () ->
         new CategoryProvider
 
-      'delete all categories':
+      'deletes all categories':
         topic: (categoryProvider) ->
            categoryProvider.deleteAll @callback
   
@@ -240,6 +240,31 @@ vows.describe('Resources')
       'response should be with a 200 OK': assertStatus 200
       'response should contains one article': (error, response, body) ->
         assert.equal body.name, "Article 02"
+
+  # Categories and articles
+
+
+  .addBatch
+    'DELETE /categories/category-01/':
+      topic: () ->
+        apiTest.del 'categories/category-01/', @callback
+
+      'response should be with a 200 OK': assertStatus 200
+
+
+  .addBatch(
+    'An article provider':
+      topic: () ->
+        new ArticleProvider
+
+      'gets all articles linked to category-01':
+        topic: (articleProvider) ->
+          category = new Category name: "Category 01", slug: "category-01"
+          articleProvider.getAll category, @callback
+          
+        'and find no article': (docs) ->
+          assert.equal 0, docs.length
+  )
 
   .export(module)
 
