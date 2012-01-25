@@ -9,14 +9,20 @@ ArticleProvider = require("../models/models").ArticleProvider
 Category = require("../models/models").Category
 
 
+cat = new Category name: "Category 01", slug: "category-01"
+
 vows.describe('Categories and articles')
+
+
+# Categories
+
 
   .addBatch(
     'A category provider':
       topic: () ->
         new CategoryProvider
 
-      'delete all categories':
+      'deletes all categories':
         topic: (categoryProvider) ->
            categoryProvider.deleteAll @callback
   
@@ -91,8 +97,7 @@ vows.describe('Categories and articles')
 
       'creates a new article for category 01':
         topic: (articleProvider) ->
-          cat = new Category name: "Category 01", slug: "category-01"
-         
+
           date = new time.Date()
           date.setTimezone("UTC")
           date.setMinutes(0)
@@ -102,8 +107,8 @@ vows.describe('Categories and articles')
           articleProvider.newArticle cat, "Article 01", date, @callback
  
         'that has now an id': (doc) ->
-            assert.notEqual undefined, doc
-            assert.isNotNull doc._id
+          assert.notEqual undefined, doc
+          assert.isNotNull doc._id
   )
 
   .addBatch(
@@ -113,7 +118,6 @@ vows.describe('Categories and articles')
 
       'gets all article for category 01':
         topic: (articleProvider) ->
-          cat = new Category name: "Category 01", slug: "category-01"
           articleProvider.getAll cat, @callback
 
         'and find one article': (docs) ->
@@ -134,12 +138,45 @@ vows.describe('Categories and articles')
           date.setHours(0)
           date.setSeconds(0)
           date.setMilliseconds(0)
-          cat = new Category name: "Category 01", slug: "category-01"
           articleProvider.getArticle cat, date, "article-01", @callback
 
         'and find corresponding article': (docs) ->
           assert.equal docs[0].slug, "article-01"
   )
+
+
+  .addBatch(
+    'A category provider':
+      topic: () ->
+        new CategoryProvider
+
+      'gets the new category':
+        topic: (categoryProvider) ->
+          categoryProvider.getCategory "category-01", @callback
+
+        'and deletes its articles': (err, docs) ->
+          assert.equal 1, docs.length
+          articleProvider = new ArticleProvider
+
+          articleProvider.deleteAllCategoryArticles cat, @callback
+
+          'without any error': (err) ->
+             assert.isUndefined err.stack
+  )
+
+  .addBatch(
+    'An article provider':
+      topic: () ->
+        new ArticleProvider
+
+      'gets all articles linked to category-01':
+        topic: (articleProvider) ->
+          articleProvider.getAll cat, @callback
+          
+        'and find no article': (docs) ->
+          assert.equal 0, docs.length
+  )
+
 
   .export(module)
 
