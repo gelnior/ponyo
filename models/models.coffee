@@ -31,6 +31,14 @@ articleSchema = new Schema
 
 Article = mongoose.model('Article', articleSchema)
 
+Article.prototype.removeWithArticles = (callback) ->
+  @remove (err) ->
+    query = Article.remove { categorySlug: @slug }
+    query.exec callback
+    return
+
+
+Category.deleteWithArticles
 
 # Providers
 
@@ -64,7 +72,8 @@ class CategoryProvider
         category = new Category name: name, slug: name.slugify()
         category.save callback
     return
- 
+
+
 exports.CategoryProvider = CategoryProvider
 
 
@@ -81,6 +90,12 @@ class ArticleProvider
   # Delete all articles
   deleteAll: (callback) ->
     query = Article.remove {}, callback
+    return
+
+  # Delete all articles for a given category
+  deleteAllCategoryArticles: (category, callback) ->
+    query = Article.remove { categorySlug: category.slug }
+    query.exec callback
     return
 
   # Get an article from its slug, date and category.
