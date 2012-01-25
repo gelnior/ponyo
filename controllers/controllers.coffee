@@ -40,6 +40,7 @@ exports.newCategory = (req, res) ->
 # Category deletion
 exports.deleteCategory = (req, res) ->
   categoryProvider = new CategoryProvider
+  articleProvider = new ArticleProvider
 
   categoryProvider.getCategory req.params.category, (err, docs) ->
     if err
@@ -51,9 +52,15 @@ exports.deleteCategory = (req, res) ->
           console.error(err.stack)
           res.json 'An error occured', 500
         else
-          return res.json  success: true
+          articleProvider.deleteAllCategoryArticles docs[0], (err) ->
+          if err
+            console.error(err.stack)
+            return res.json 'An error occured while deleting linked articles', \
+                            500
+          else
+            return res.json  success: true
     else
-      res.json 'I dont have that', 404
+      return res.json 'I dont have that', 404
 
 # Category object
 exports.category = (req, res) ->
