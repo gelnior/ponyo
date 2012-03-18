@@ -1,7 +1,7 @@
 mongoose = require('mongoose')
 
 # Utils
-require("../public/client/src/app/utils/string")
+require("../client/app/utils/string")
 
 # DB
 mongoose.connect('mongodb://127.0.0.1/ponyo')

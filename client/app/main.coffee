@@ -23,8 +23,12 @@ $(document).ready ->
     app.views.category = new CategoryView()
     app.views.article = new ArticleView()
 
+  app.start = ->
     # Initialize app route 
     app.routers.main.navigate 'home', true if Backbone.history.getFragment() is ''
+  
   app.initialize()
-  Backbone.history.start()
+  Backbone.history.start
+    root: "/"
+  app.start()
 

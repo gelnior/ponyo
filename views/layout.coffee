@@ -7,15 +7,15 @@ html ->
     meta(name: 'description', content: @description) if @description?
 
     link rel: 'icon', href: '/favicon.png'
-    link rel: 'stylesheet', href: '/stylesheets/style.css'
+    link rel: 'stylesheet', href: '/stylesheets/app.css'
   
-    script src: '/js/moment.min.js'
-    script src: '/client/build/web/js/app.js'
+    script src: '/javascripts/vendor.js'
+    script src: '/javascripts/app.js'
     
     if @test
-      link rel: 'stylesheet', href: '/stylesheets/jasmine.css'
-      script src: '/client/tests/jasmine.js'
-      script src: '/client/tests/jasmine-html.js'
+      link rel: 'stylesheet', href: '/tests/jasmine.css'
+      script src: '/tests/jasmine.js'
+      script src: '/client/public/tests/jasmine-html.js'
 
 
   body ->
